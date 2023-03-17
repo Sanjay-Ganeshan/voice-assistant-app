@@ -1391,3 +1391,207 @@ Feel free to submit issues or pull requests if you have any suggestions, improve
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
   
+# Human
+Wait, my session storage gets cleared every time I close my browser. What gives?
+
+# GPT-4
+Session storage is designed to store data only for the duration of a page session. This means that the data will persist across page reloads and restores, but will be cleared when the browser (or browser tab) is closed.
+
+If you want to store your API key more persistently, consider using `localStorage` instead of `sessionStorage`. `localStorage` has the same API as `sessionStorage`, but the data stored in `localStorage` will persist even after the browser is closed and reopened.
+
+To use `localStorage`, simply replace sessionStorage with localStorage in your code:
+
+```
+const SESSION_STORAGE_KEY = "OPENAI_API_KEY";
+
+// ...
+
+this.state = {
+    // ...
+    apiKey: localStorage.getItem(SESSION_STORAGE_KEY) ?? "",
+};
+
+// ...
+
+saveToken(ev: React.FocusEvent<HTMLInputElement>) {
+    if (this.state.apiKey !== null) {
+        localStorage.setItem(SESSION_STORAGE_KEY, this.state.apiKey);
+    }
+}
+```
+
+Keep in mind that storing sensitive data like API keys in localStorage can have security implications, as it may be accessible to other scripts running on the same domain. It is not recommended to store sensitive data in `localStorage` for production applications.
+
+# Human
+Here's my code. Can you get rid of the session storage and use local storage instead?
+
+```
+import React, { Component } from "react";
+import axios from "axios";
+import styles from "./MainPage.module.css";
+
+type Props = {};
+
+type State = {
+    isRecording: boolean;
+    apiKey: string;
+    mediaRecorder: MediaRecorder | null;
+};
+
+const SESSION_STORAGE_KEY = "OPENAI_API_KEY";
+
+export default class MainPage extends Component<Props, State> {
+    state: State = {
+        isRecording: false,
+        mediaRecorder: null,
+        apiKey: sessionStorage.getItem(SESSION_STORAGE_KEY) ?? "",
+    };
+
+    sendAudioToApi = async (audioBlob: Blob) => {
+        const formData = new FormData();
+        formData.append("file", audioBlob, "audio.webm");
+        formData.append("model", "whisper-1");
+
+        try {
+            const response = await axios.post(
+                "https://api.openai.com/v1/audio/transcriptions",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${this.state.apiKey}`,
+                    },
+                }
+            );
+
+            console.log(response.data);
+            const transcriptionData = response.data;
+            const transcription = transcriptionData.text;
+
+            const chatResponse = await axios.post(
+                "https://api.openai.com/v1/chat/completions",
+                {
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a helpful assistant.",
+                        },
+                        { role: "user", content: "Answer the following question in just a few sentences."},
+                        { role: "user", content: transcription },
+                    ],
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.state.apiKey}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            // Log the completed chat
+            const chatText = chatResponse.data.choices[0].message.content;
+            const utterance = new SpeechSynthesisUtterance(chatText);
+            speechSynthesis.speak(utterance);
+        } catch (error) {
+            console.error("Error sending audio to API:", error);
+        }
+    };
+
+    toggleRecording = async () => {
+        const { isRecording, mediaRecorder } = this.state;
+
+        if (!isRecording) {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
+            const newMediaRecorder = new MediaRecorder(stream);
+            newMediaRecorder.start();
+
+            newMediaRecorder.ondataavailable = async (e) => {
+                await this.sendAudioToApi(e.data);
+            };
+
+            this.setState({
+                mediaRecorder: newMediaRecorder,
+                isRecording: true,
+            });
+        } else {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                this.setState({ mediaRecorder: null, isRecording: false });
+            }
+        }
+    };
+
+    saveToken(ev: React.FocusEvent<HTMLInputElement>) {
+        if (this.state.apiKey !== null) {
+            sessionStorage.setItem(
+                SESSION_STORAGE_KEY, this.state.apiKey
+            );
+        }
+    }
+
+    textChanged(ev: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            apiKey: ev.target.value
+        });
+    }
+
+    render() {
+        const { isRecording } = this.state;
+        
+        return (
+            <div className={styles.container}>
+                <p>OpenAI Key Here</p>
+                <input type="password" onChange={this.textChanged.bind(this)} onBlur={this.saveToken.bind(this)} value={this.state.apiKey}></input>
+                <button
+                    className={styles.recordButton}
+                    onClick={this.toggleRecording}
+                >
+                    {isRecording ? "Stop" : "Record"}
+                </button>
+            </div>
+        );
+    }
+}
+```
+
+# GPT-4
+Here's your code modified to use localStorage instead of sessionStorage:
+
+```
+import React, { Component } from "react";
+import axios from "axios";
+import styles from "./MainPage.module.css";
+
+type Props = {};
+
+type State = {
+    isRecording: boolean;
+    apiKey: string;
+    mediaRecorder: MediaRecorder | null;
+};
+
+const LOCAL_STORAGE_KEY = "OPENAI_API_KEY";
+
+export default class MainPage extends Component<Props, State> {
+    state: State = {
+        isRecording: false,
+        mediaRecorder: null,
+        apiKey: localStorage.getItem(LOCAL_STORAGE_KEY) ?? "",
+    };
+
+    // ... (rest of the code remains unchanged)
+
+    saveToken(ev: React.FocusEvent<HTMLInputElement>) {
+        if (this.state.apiKey !== null) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, this.state.apiKey);
+        }
+    }
+
+    // ... (rest of the code remains unchanged)
+}
+```
+
+I've replaced `sessionStorage` with `localStorage` and updated the constant name from `SESSION_STORAGE_KEY` to `LOCAL_STORAGE_KEY`. With these changes, your API key will now be stored in `localStorage` and persist across browser sessions.
