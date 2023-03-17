@@ -10,13 +10,13 @@ type State = {
     mediaRecorder: MediaRecorder | null;
 };
 
-const SESSION_STORAGE_KEY = "OPENAI_API_KEY";
+const LOCAL_STORAGE_KEY = "OPENAI_API_KEY";
 
 export default class MainPage extends Component<Props, State> {
     state: State = {
         isRecording: false,
         mediaRecorder: null,
-        apiKey: sessionStorage.getItem(SESSION_STORAGE_KEY) ?? "",
+        apiKey: localStorage.getItem(LOCAL_STORAGE_KEY) ?? "",
     };
 
     sendAudioToApi = async (audioBlob: Blob) => {
@@ -98,11 +98,10 @@ export default class MainPage extends Component<Props, State> {
 
     saveToken(ev: React.FocusEvent<HTMLInputElement>) {
         if (this.state.apiKey !== null) {
-            sessionStorage.setItem(
-                SESSION_STORAGE_KEY, this.state.apiKey
-            );
+            localStorage.setItem(LOCAL_STORAGE_KEY, this.state.apiKey);
         }
     }
+
 
     textChanged(ev: React.ChangeEvent<HTMLInputElement>) {
         this.setState({
@@ -112,7 +111,7 @@ export default class MainPage extends Component<Props, State> {
 
     render() {
         const { isRecording } = this.state;
-        
+
         return (
             <div className={styles.container}>
                 <p>OpenAI Key Here</p>
