@@ -1,0 +1,53 @@
+/* MainPage.module.css */
+body {
+  background-color: #1a1a1a;
+  color: #f1f1f1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  gap: 20px;
+}
+
+input[type="password"] {
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+  border: 1px solid #4a4a4a;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+input[type="password"]::placeholder {
+  color: #999;
+}
+
+.recordButton {
+  background-color: red;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  color: white;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.recordButton:hover {
+  transform: scale(1.1);
+}
+
+.recordButton:active {
+  transform: scale(0.9);
+}
