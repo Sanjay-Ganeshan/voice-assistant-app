@@ -4,14 +4,15 @@ what is the create-react-app command for typescript templates?
 # GPT-4
 To create a new React project with TypeScript using create-react-app, you can use the --template flag followed by typescript. Run the following command in your terminal:
 
-lua
-Copy code
+```
 npx create-react-app your-project-name --template typescript
-Replace your-project-name with the desired name for your project. This will create a new React project using the TypeScript template, which comes preconfigured with TypeScript support and the necessary dependencies.
+```
+
+Replace `your-project-name` with the desired name for your project. This will create a new React project using the TypeScript template, which comes preconfigured with TypeScript support and the necessary dependencies.
 
 # Human
 Here's my code:
-
+```
 import React, { Component } from 'react'
 
 type Props = {}
@@ -27,15 +28,14 @@ export default class MainPage extends Component<Props, State> {
     )
   }
 }
-
+```
 
 Modify this component so that it displays a bright-red record button in the middle
 
 # GPT-4
 To modify your component to display a bright-red record button in the middle, you can add some inline CSS to style the button. Here's the updated code:
 
-jsx
-Copy code
+```
 import React, { Component } from 'react';
 
 type Props = {};
@@ -71,21 +71,24 @@ export default class MainPage extends Component<Props, State> {
     );
   }
 }
-In this code snippet, I've created a buttonStyle object that contains CSS properties for styling the button. Then, I've added a <button> element inside the <div> with the style attribute set to buttonStyle. The button displays a red circle with the Unicode character "⏺️" (record button symbol) in the center.
+```
+In this code snippet, I've created a `buttonStyle` object that contains CSS properties for styling the button. Then, I've added a `<button>` element inside the `<div>` with the style attribute set to `buttonStyle`. The button displays a red circle with the Unicode character `"⏺️"` (record button symbol) in the center.
 
 # Human
 That produced this error:
+
+```
 Type '{ display: string; justifyContent: string; alignItems: string; position: string; top: string; left: string; transform: string; backgroundColor: string; borderRadius: string; width: string; height: string; color: string; fontSize: string; border: string; cursor: string; }' is not assignable to type 'Properties<string | number, string & {}>'.
   Types of property 'position' are incompatible.
     Type 'string' is not assignable to type 'Position | undefined'
+```
 
 # GPT-4
 I apologize for the oversight. The issue is due to TypeScript's strict type checking for CSS properties. You can create a CSS file and import it to style your component instead of using inline styles.
 
 First, create a new file named MainPage.module.css in the same directory as your MainPage component:
 
-css
-Copy code
+```
 /* MainPage.module.css */
 .container {
   position: fixed;
@@ -104,10 +107,11 @@ Copy code
   border: none;
   cursor: pointer;
 }
+```
+
 Then, modify your MainPage component to import and use the CSS module:
 
-jsx
-Copy code
+```
 import React, { Component } from 'react';
 import styles from './MainPage.module.css';
 
@@ -126,6 +130,8 @@ export default class MainPage extends Component<Props, State> {
     );
   }
 }
+```
+
 This approach moves the styles to a separate CSS file and utilizes CSS modules to prevent any type issues with TypeScript.
 
 # Human
@@ -134,10 +140,9 @@ Change the button text to say "Record", and give it an animation on hover and cl
 # GPT-4
 To change the button text to "Record" and add animations on hover and click, you can update your CSS file and add the appropriate styles.
 
-Update your MainPage.module.css file:
+Update your `MainPage.module.css` file:
 
-css
-Copy code
+```
 /* MainPage.module.css */
 .container {
   position: fixed;
@@ -168,12 +173,13 @@ Copy code
 .recordButton:active {
   transform: scale(0.9);
 }
+```
+
 I've updated the recordButton class to use flexbox for centering the text, and added :hover and :active states for animations. The button now scales up by 10% when hovered and scales down by 10% when clicked.
 
 Then, update your MainPage component to change the button text:
 
-jsx
-Copy code
+```
 import React, { Component } from 'react';
 import styles from './MainPage.module.css';
 
@@ -192,18 +198,19 @@ export default class MainPage extends Component<Props, State> {
     );
   }
 }
+```
+
 Now, the button will display the text "Record" and have animations on hover and click.
 
 # Human
-Implement an onclick handler for the record button. When clicked, it should record the user's voice until the button is clicked again
+Implement an `onclick` handler for the record button. When clicked, it should record the user's voice until the button is clicked again
 
 # GPT-4
-To implement the onclick handler for the record button, you need to use the MediaRecorder API to record the user's voice. The following code demonstrates how to create an onclick handler and toggle recording based on the button click:
+To implement the `onclick` handler for the record button, you need to use the MediaRecorder API to record the user's voice. The following code demonstrates how to create an onclick handler and toggle recording based on the button click:
 
 Update the MainPage component:
 
-jsx
-Copy code
+```
 import React, { Component } from 'react';
 import styles from './MainPage.module.css';
 
@@ -258,9 +265,11 @@ export default class MainPage extends Component<Props, State> {
     );
   }
 }
-This code adds a toggleRecording method, which handles the recording process. When the button is clicked, and isRecording is false, it requests the user's permission to access the microphone, creates a new MediaRecorder instance, and starts recording.
+```
 
-When the button is clicked again (i.e., isRecording is true), the recording stops, and the recorded audio data is available in the ondataavailable event listener. Currently, the data is logged to the console, but you can save it or send it to a server.
+This code adds a `toggleRecording` method, which handles the recording process. When the button is clicked, and `isRecording` is `false`, it requests the user's permission to access the microphone, creates a new MediaRecorder instance, and starts recording.
+
+When the button is clicked again (i.e., `isRecording` is true), the recording stops, and the recorded audio data is available in the `ondataavailable` event listener. Currently, the data is logged to the console, but you can save it or send it to a server.
 
 The button text will also change depending on whether the recording is in progress or not.
 
@@ -384,12 +393,14 @@ The sampling temperature, between 0 and 1. Higher values like 0.8 will make the 
 To call the speech-to-text API with the voice recording, you need to make some changes to your code. First, you'll want to create a function to send the audio data to the API. Next, you'll need to update the toggleRecording method to call this function with the recorded audio.
 
 Install the axios library to make HTTP requests:
-bash
-Copy code
+
+```
 npm install axios
-Update the MainPage component:
-jsx
-Copy code
+```
+
+Update the `MainPage` component:
+
+```
 import React, { Component } from 'react';
 import axios from 'axios';
 import styles from './MainPage.module.css';
@@ -461,9 +472,11 @@ export default class MainPage extends Component<Props, State> {
     );
   }
 }
-Replace your_openai_api_key_here with your actual API key.
+```
 
-In this updated component, I've added a new method sendAudioToApi, which takes an audio blob as an argument, creates a FormData object, and sends it as a POST request to the OpenAI API for transcription. The toggleRecording method now calls sendAudioToApi with the recorded audio data when the ondataavailable event is triggered.
+Replace `your_openai_api_key_here` with your actual API key.
+
+In this updated component, I've added a new method `sendAudioToApi`, which takes an audio blob as an argument, creates a FormData object, and sends it as a POST request to the OpenAI API for transcription. The `toggleRecording` method now calls `sendAudioToApi` with the recorded audio data when the ondataavailable event is triggered.
 
 Please note that this code assumes that the API key and endpoint are both correct and working. You might need to adjust them based on the actual API documentation and your API key. Additionally, be aware that exposing your API key in the frontend code is not secure. In a production environment, you should send the audio data to your backend server, which then makes the request to the API using the API key. This prevents exposing your API key to end users.
 
@@ -649,13 +662,13 @@ To update the click handler to call the speech-to-text API and then send the tra
 
 First, make sure to import the necessary libraries:
 
-javascript
-Copy code
+```
 import openai from 'openai';
+```
+
 Then, update the click handler function:
 
-javascript
-Copy code
+```
 async function handleClick() {
   const audioFile = new Blob(chunks, { type: 'audio/mp3' });
 
@@ -687,7 +700,9 @@ async function handleClick() {
   // Log the completed chat
   console.log(chatResponse['choices'][0]['message']['content']);
 }
-This code updates the click handler function to first call the speech-to-text API with the voice recording, and then send the transcription as a user message to the chat completion API. Finally, it logs the completed chat. Make sure to replace OPENAI_API_KEY with your actual API key.
+```
+
+This code updates the click handler function to first call the speech-to-text API with the voice recording, and then send the transcription as a user message to the chat completion API. Finally, it logs the completed chat. Make sure to replace `OPENAI_API_KEY` with your actual API key.
 
 # Human
 Rewrite this, but don't import openai. Send an HTTP request with axios instead.
@@ -695,12 +710,13 @@ Rewrite this, but don't import openai. Send an HTTP request with axios instead.
 # GPT-4
 First, make sure you have the axios library installed. You can install it using:
 
-Copy code
+```
 npm install axios
+```
+
 Then, update the click handler function using axios:
 
-javascript
-Copy code
+```
 import axios from 'axios';
 
 async function handleClick() {
@@ -737,7 +753,9 @@ async function handleClick() {
   // Log the completed chat
   console.log(chatResponse.data.choices[0].message.content);
 }
-In this updated code, I've replaced the OpenAI library with axios for sending HTTP requests. The transcription and chat completion API calls are now both done using axios.post. Make sure to replace OPENAI_API_KEY with your actual API key.
+```
+
+In this updated code, I've replaced the OpenAI library with axios for sending HTTP requests. The transcription and chat completion API calls are now both done using axios.post. Make sure to replace `OPENAI_API_KEY` with your actual API key.
 
 # Human
 Instead of logging the completed chat, read it out using text-to-speech
@@ -746,8 +764,7 @@ Instead of logging the completed chat, read it out using text-to-speech
 
 To read the completed chat using the browser's built-in text-to-speech API, you can use the SpeechSynthesis API. Update the handleClick function like this:
 
-javascript
-Copy code
+```
 import axios from 'axios';
 
 async function handleClick() {
@@ -786,6 +803,8 @@ async function handleClick() {
   const utterance = new SpeechSynthesisUtterance(chatText);
   speechSynthesis.speak(utterance);
 }
+```
+
 In this updated code, I've replaced the console.log statement with the use of the SpeechSynthesisUtterance object and the speechSynthesis.speak() method to read out the completed chat text.
 
 # Human
@@ -812,8 +831,7 @@ I want to save a string in Session Storage, in typescript. How do I do this?
 # GPT-4
 In TypeScript, you can use the sessionStorage object to store data temporarily in the browser's session. Here's an example of how to save a string in sessionStorage:
 
-typescript
-Copy code
+```
 // Save a string to sessionStorage
 function saveString(key: string, value: string): void {
   sessionStorage.setItem(key, value);
@@ -824,12 +842,14 @@ const myKey = "exampleKey";
 const myValue = "This is an example string.";
 
 saveString(myKey, myValue);
-In this example, we have a function called saveString that accepts a key and a value as arguments. It uses the setItem method to store the value with the specified key in sessionStorage. The stored data will be available for the duration of the page session and will be deleted when the browser window or tab is closed.
+```
+
+In this example, we have a function called `saveString` that accepts a key and a value as arguments. It uses the `setItem` method to store the value with the specified key in `sessionStorage`. The stored data will be available for the duration of the page session and will be deleted when the browser window or tab is closed.
 
 # Human
 Here's my code:
 
-
+```
 import React, { Component } from "react";
 import axios from "axios";
 import styles from "./MainPage.module.css";
@@ -952,21 +972,23 @@ export default class MainPage extends Component<Props, State> {
         );
     }
 }
+```
 
 
 What's the type of ev?
 
 # GPT-4
-The type of ev in the textChanged method is React.ChangeEvent<HTMLInputElement>. This type represents a change event for an input element in a React application.
+The type of ev in the `textChanged` method is `React.ChangeEvent<HTMLInputElement>`. This type represents a change event for an input element in a React application.
 
 Here's how you can update the textChanged method with the correct event type:
 
-typescript
-Copy code
+```
 textChanged(ev: React.ChangeEvent<HTMLInputElement>) {
     // Your code here
 }
-Now, you can access the value of the input element using ev.target.value within the textChanged method.
+```
+
+Now, you can access the value of the input element using `ev.target.value` within the textChanged method.
 
 # Human
 I want the text box to be updated normally when the text is changed. How do I do this?
@@ -975,36 +997,46 @@ I want the text box to be updated normally when the text is changed. How do I do
 To update the text box when the text is changed, you can maintain the input value in the component's state and update it in the textChanged method. Here's how you can do this:
 
 Add a new state property for the input value:
-typescript
-Copy code
+
+```
 type State = {
     isRecording: boolean;
     apiKey: string;
     mediaRecorder: MediaRecorder | null;
     inputValue: string; // Add this line
 };
+```
+
 Initialize the new state property in the state object:
-typescript
-Copy code
+
+```
 state: State = {
     isRecording: false,
     mediaRecorder: null,
     inputValue: '', // Add this line
 };
-Update the textChanged method to set the new input value:
-typescript
-Copy code
+```
+
+Update the `textChanged` method to set the new input value:
+
+```
 textChanged(ev: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ inputValue: ev.target.value });
 }
+```
+
 Bind the input value to the state in the render method:
-typescript
-Copy code
+
+```
 <input type="text" value={this.state.inputValue} onChange={this.textChanged.bind(this)} />
+```
+
 Now, the text box will be updated normally when the text is changed, and the updated value will be stored in the component's state.
 
 # Human
 Here's my code now:
+
+```
 import React, { Component } from "react";
 import axios from "axios";
 import styles from "./MainPage.module.css";
@@ -1129,18 +1161,20 @@ export default class MainPage extends Component<Props, State> {
         );
     }
 }
+```
 
 
 What's the type of ev in saveToken?
 
 # GPT-4
-The type of ev in the saveToken method should be React.FocusEvent<HTMLInputElement>. This type represents a focus event for an input element in React. Here's the updated saveToken method with the correct event type:
+The type of `ev` in the `saveToken` method should be `React.FocusEvent<HTMLInputElement>`. This type represents a focus event for an input element in React. Here's the updated saveToken method with the correct event type:
 
-typescript
-Copy code
+```
 saveToken(ev: React.FocusEvent<HTMLInputElement>) {
     // Your code here
 }
+```
+
 This type will give you access to the event properties and methods specific to focus events for input elements.
 
 # Human
@@ -1177,6 +1211,7 @@ Now, all traffic to your domain should be redirected to HTTPS. It may take some 
 # Human
 Here's my code:
 
+```
 import React, { Component } from "react";
 import axios from "axios";
 import styles from "./MainPage.module.css";
@@ -1306,6 +1341,7 @@ export default class MainPage extends Component<Props, State> {
         );
     }
 }
+```
 
 
 Write a README.md file describing the project
