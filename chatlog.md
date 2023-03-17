@@ -504,7 +504,7 @@ An example API call looks as follows:
 10
 11
 12
-# Note: you need to be using OpenAI Python v0.27.0 for the code below to work
+Note: you need to be using OpenAI Python v0.27.0 for the code below to work
 import openai
 
 openai.ChatCompletion.create(
